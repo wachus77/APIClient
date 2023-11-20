@@ -3,6 +3,7 @@
 [![SwiftPM Compatible](https://img.shields.io/badge/SwiftPM-Compatible-brightgreen.svg)](https://github.com/wachus77/APIClient)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/wachus77/APIClient)
+[![Swift Version: 5.5](https://img.shields.io/badge/Swift-5.5-orange.svg)](https://swift.org/)
 [![macOS v12](https://img.shields.io/badge/macOS-v12-blue.svg)](https://www.apple.com/macos/)
 [![iOS v15](https://img.shields.io/badge/iOS-v15-blue.svg)](https://www.apple.com/ios/)
 [![tvOS v15](https://img.shields.io/badge/tvOS-v15-blue.svg)](https://www.apple.com/tvos/)
