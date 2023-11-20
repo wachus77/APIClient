@@ -11,4 +11,5 @@ DerivedData
 ## Swiftpm
 .swiftpm
 .build
+/build
 Package.resolved
