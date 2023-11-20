@@ -1,0 +1,14 @@
+.DS_Store
+
+# XCode
+*.bak
+xcuserdata/
+project.xcworkspace
+*.xccheckout
+DerivedData
+/.build
+
+## Swiftpm
+.swiftpm
+.build
+Package.resolved
