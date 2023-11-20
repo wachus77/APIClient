@@ -13,7 +13,7 @@ public protocol APIResponse: Decodable {
 }
 
 extension APIResponse {
-    static var decoder: JSONDecoder {
+    public static var decoder: JSONDecoder {
         let decoder = JSONDecoder()
         return decoder
     }

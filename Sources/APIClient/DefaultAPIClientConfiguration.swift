@@ -34,7 +34,7 @@ public struct DefaultAPIClientConfiguration: APIClientConfiguration {
     ///     - host: The host subcomponent of the URL.
     ///     - generalAPIPath: General API path.
     ///     - defaultHeaders: Default headers to be used in every request.
-    init(scheme: Scheme,
+    public init(scheme: Scheme,
          host: String,
          generalAPIPath: String? = nil,
          defaultHeaders: [String: String] = ["Accept": "application/json",
