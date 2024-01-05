@@ -45,9 +45,63 @@ public final class DefaultAPIClient: APIClient {
         
         return try await self.decodeResponse(request, dataWithResponse: urlSession.data(for: urlRequest))
     }
+    
+    /// Performs the API request
+    public func request<Request>(request: Request) async throws -> Request.Response where Request: APIRequestModelWithSimpleDataResponse {
+        guard let urlRequest = try? request.build(againstBaseURL: configuration.baseURL, defaultHeaders: configuration.defaultHeaders) else {
+            throw APIError.urlRequestCreationFailed
+        }
+        
+        // Print to console if configured.
+        if configuration.printRequests {
+            print("------------------------------")
+            print(request.debugDescription)
+            print("Default HTTP headers: \(configuration.defaultHeaders)")
+            print(configuration.baseURL)
+            print("BUILT URL REQUEST: \(urlRequest.debugDescription)")
+        }
+        
+        return try await self.decodeResponse(request, dataWithResponse: urlSession.data(for: urlRequest))
+    }
 }
 
 extension DefaultAPIClient {
+    private func decodeResponse<Request>(_ request: Request, dataWithResponse: (data: Data, response: URLResponse)) async throws -> Data where Request: APIRequestModelWithSimpleDataResponse {
+        guard let response = dataWithResponse.response as? HTTPURLResponse else {
+            throw APIError.conversionToHTTPURLResponseFailed
+        }
+        
+        // Print to console if configured.
+        if self.configuration.printResponses {
+            print("------------------------------")
+            do {
+                debugPrint(response)
+                debugPrint(try JSONSerialization.jsonObject(with: dataWithResponse.data))
+            } catch {
+                print("Encoutered an error when serializing json object: \(error)")
+            }
+        }
+        
+        switch response.statusCode {
+        case 200...299:
+            break
+        case 400:
+            throw APIError.badRequest(errorCode: response.statusCode, customError: nil)
+        case 401:
+            throw APIError.unAuthorised(errorCode: response.statusCode, customError: nil)
+        case 404:
+            throw APIError.notFound(errorCode: response.statusCode, customError: nil)
+        case 400 ... 499:
+            break
+        case 500 ... 599:
+            throw APIError.serverError(errorCode: response.statusCode, customError: nil)
+        default:
+            throw APIError.some(errorCode: response.statusCode, customError: nil)
+        }
+        
+        return dataWithResponse.data
+    }
+    
     private func decodeResponse<Request, T: Decodable>(_ request: Request, dataWithResponse: (data: Data, response: URLResponse)) async throws -> T where Request: APIRequest {
         guard let response = dataWithResponse.response as? HTTPURLResponse else {
             throw APIError.conversionToHTTPURLResponseFailed
