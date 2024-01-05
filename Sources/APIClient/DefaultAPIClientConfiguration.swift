@@ -37,8 +37,7 @@ public struct DefaultAPIClientConfiguration: APIClientConfiguration {
     public init(scheme: Scheme,
          host: String,
          generalAPIPath: String? = nil,
-         defaultHeaders: [String: String] = ["Accept": "application/json",
-                                             "Content-Type": "application/json"],
+                defaultHeaders: [String: String] = [:],
          printResponses: Bool = false,
          printRequests: Bool = false) {
         self.scheme = scheme

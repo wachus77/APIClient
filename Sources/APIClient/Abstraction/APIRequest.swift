@@ -6,6 +6,12 @@
 
 import Foundation
 
+public enum ContentType {
+    case applicationJson
+    case multipartFormData
+    case none
+}
+
 /// An API request representation that can build a `URLRequest` and be encoded.
 public protocol APIRequest: Encodable {
     /// The type of a response.
@@ -14,8 +20,8 @@ public protocol APIRequest: Encodable {
     /// The type of an custom error.
     associatedtype CustomError: APICustomError
 
-    /// Indicates if request is type of No-Content.
-    var isRequestWithHttpBody: Bool { get }
+    /// Content-Type of the request
+    var contentType: ContentType { get }
     
     /// Returns a string that describes the contents of the request for presentation in the debugger.
     var debugDescription: String { get }
@@ -40,9 +46,9 @@ extension APIRequest {
     /// - SeeAlso: APIRequest.CustomError
     public typealias CustomError = DefaultCustomAPIError
     
-    /// - SeeAlso: APIRequest.isRequestWithHttpBody
-    public var isRequestWithHttpBody: Bool {
-        return false
+    /// - SeeAlso: APIRequest.ContentType
+    var contentType: ContentType {
+        .none
     }
 
     /// - SeeAlso: APIRequest.encoder

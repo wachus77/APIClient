@@ -16,6 +16,9 @@ public protocol APIRequestModel: APIRequest {
 
     /// An array of query items for the URL in the order in which they appear in the original query string.
     var queryItems: [URLQueryItem]? { get }
+    
+    /// Property to build request with 'Content-Type: multipart/form-data'
+    var multipartForm: MultipartForm? { get }
 
     /// HTTP headers of the request.
     var headers: [String: String] { get }
@@ -30,6 +33,11 @@ extension APIRequestModel {
 
     /// - SeeAlso: APIRequest.queryItems
     public var queryItems: [URLQueryItem]? {
+        nil
+    }
+    
+    /// - SeeAlso: APIRequest.multipartForm
+    public var multipartForm: MultipartForm? {
         nil
     }
     
@@ -52,10 +60,21 @@ extension APIRequestModel {
     public func build(againstBaseURL baseURL: URL, defaultHeaders: [String: String]) throws -> URLRequest {
         var request = URLRequest(url: buildURL(againstBaseURL: baseURL))
         request.httpMethod = method.rawValue
-        request.allHTTPHeaderFields = defaultHeaders.appending(elementsOf: headers)
-        if isRequestWithHttpBody {
+        var requestAllHeaders = defaultHeaders.appending(elementsOf: headers)
+        
+        switch contentType {
+        case .applicationJson:
             request.httpBody = try encoder.encode(self)
+            requestAllHeaders = requestAllHeaders.appending(elementsOf: ["Content-Type": "application/json"])
+        case .multipartFormData:
+            request.httpBody = multipartForm?.bodyData
+            requestAllHeaders = requestAllHeaders.appending(elementsOf: ["Content-Type": multipartForm?.contentType ?? ""])
+        case .none:
+            break
         }
+        
+        request.allHTTPHeaderFields = requestAllHeaders
+        
         return request
     }
 }
