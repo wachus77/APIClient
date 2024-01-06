@@ -47,7 +47,7 @@ public final class DefaultAPIClient: APIClient {
     }
     
     /// Performs the API request
-    public func request<Request>(request: Request) async throws -> Request.Response where Request: APIRequestModelWithSimpleDataResponse {
+    public func request<Request>(request: Request) async throws -> Data where Request: APIRequestModelWithSimpleDataResponse {
         guard let urlRequest = try? request.build(againstBaseURL: configuration.baseURL, defaultHeaders: configuration.defaultHeaders) else {
             throw APIError.urlRequestCreationFailed
         }
