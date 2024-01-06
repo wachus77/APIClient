@@ -74,12 +74,7 @@ extension DefaultAPIClient {
         // Print to console if configured.
         if self.configuration.printResponses {
             print("------------------------------")
-            do {
-                debugPrint(response)
-                debugPrint(try JSONSerialization.jsonObject(with: dataWithResponse.data))
-            } catch {
-                print("Encoutered an error when serializing json object: \(error)")
-            }
+            debugPrint(response)
         }
         
         switch response.statusCode {
