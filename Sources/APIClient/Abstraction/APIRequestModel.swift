@@ -43,17 +43,30 @@ extension APIRequestModel {
     
     /// - SeeAlso: APIRequest.debugDescription
     public var debugDescription: String {
-        let body: String = {
-            guard let bodyData = try? JSONEncoder().encode(self) else { return "no body" }
-            return String(data: bodyData, encoding: .utf8) ?? ""
-        }()
-        return """
+        
+        var description = """
         HTTP method: \(method.rawValue),\n
         Path: \(path),\n
-        HTTP headers: \(headers),\n
         Query items: \(String(describing: queryItems)),\n
-        JSON body: \(body)\n
         """
+        
+        switch contentType {
+        case .applicationJson:
+            description.append("HTTP headers: \(headers.appending(elementsOf: ["Content-Type": "application/json"])),\n")
+            
+            let body: String = {
+                guard let bodyData = try? JSONEncoder().encode(self) else { return "no body" }
+                return String(data: bodyData, encoding: .utf8) ?? ""
+            }()
+            description.append("JSON body: \(body)\n")
+        case .multipartFormData:
+            description.append("HTTP headers: \(headers.appending(elementsOf: ["Content-Type": multipartForm?.contentType ?? ""])),\n")
+            break
+        case .none:
+            break
+        }
+       
+        return description
     }
 
     /// - SeeAlso: APIRequest.build(againstBaseURL:defaultHeaders:)
